@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import LeadList from './components/LeadList';
 import LeadDetail from './components/LeadDetail';
-import { fetchLeads, classifyLead, ApiError } from './api/api.js';
-import { normalizeLead } from './utils/utils.js';
+import { fetchLeads, classifyLead, ApiError } from './api/api';
+import { normalizeLead } from './utils/utils';
 import './index.css';
 
 export default function App() {
@@ -15,6 +15,8 @@ export default function App() {
   // lead never disables the button on another.
   const [classifyingId, setClassifyingId] = useState(null);
   const [classifyErrors, setClassifyErrors] = useState({});
+
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const loadLeads = useCallback(async () => {
     setLoading(true);
@@ -70,11 +72,25 @@ export default function App() {
     }
   }, [selectedId, classifyingId]);
 
+  const handleLeadCreated = useCallback((lead) => {
+    const normalized = normalizeLead(lead);
+    setLeads((prev) => [normalized, ...prev]);
+    setSelectedId(normalized.id);
+    setShowAddForm(false);
+  }, []);
+
   const selectedLead = leads.find((l) => l.id === selectedId) || null;
 
   return (
     <div className="flex h-screen items-stretch">
-      <LeadList leads={leads} selectedId={selectedId} onSelect={setSelectedId} />
+      <LeadList
+        leads={leads}
+        selectedId={selectedId}
+        onSelect={setSelectedId}
+        showAddForm={showAddForm}
+        onToggleAddForm={() => setShowAddForm((v) => !v)}
+        onLeadCreated={handleLeadCreated}
+      />
 
       {loading ? (
         <div className="flex-1 flex items-center justify-center text-secondary text-[13px]">

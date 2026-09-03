@@ -2,13 +2,25 @@ import httpx
 from libs.config import MIN_CONTENT_LENGTH
 
 
+def resp_min_contextwindow_adjustment(text: str, max_chars: int = 2000):
+    if text is None:
+        return None
+
+    if len(text) <= max_chars:
+        return text
+
+    half = max_chars // 2
+    return text[:half] + "\n...\n" + text[-half:]
+
 async def fetch_via_jina(url: str) -> str:
     """Fetch page content through Jina AI Reader. Free, no key required."""
     jina_url = f"https://r.jina.ai/{url}"
     async with httpx.AsyncClient(timeout=20.0) as client:
         resp = await client.get(jina_url)
         resp.raise_for_status()
-        return resp.text
+       
+        
+        return resp_min_contextwindow_adjustment(resp.text)
 
 
 async def fetch_via_playwright(url: str) -> str:
@@ -21,6 +33,7 @@ async def fetch_via_playwright(url: str) -> str:
         try:
             await page.goto(url, timeout=20000, wait_until="domcontentloaded")
             text = await page.inner_text("body")
+             
         finally:
             await browser.close()
         return text
@@ -36,6 +49,7 @@ async def fetch_page_content(url: str | None) -> tuple[str | None, str]:
 
     try:
         content = await fetch_via_jina(url)
+        print("Website content chars:", len(content))
         if content and len(content.strip()) >= MIN_CONTENT_LENGTH:
             return content, "jina"
     except Exception:
@@ -43,6 +57,7 @@ async def fetch_page_content(url: str | None) -> tuple[str | None, str]:
 
     try:
         content = await fetch_via_playwright(url)
+        
         if content and len(content.strip()) >= MIN_CONTENT_LENGTH:
             return content, "playwright"
     except Exception:

@@ -60,3 +60,15 @@ def insert_classification(lead_id: int, category: str, confidence: int, reasonin
         .execute()
     )
     return resp.data[0]
+
+def insert_lead(company_name: str, url: str | None) -> dict:
+    row = (
+        supabase.table("leads")
+        .insert({
+            "company_name": company_name,
+            "url": url,
+        })
+        .execute()
+    )
+    return row.data[0]
+        

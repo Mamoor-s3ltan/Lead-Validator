@@ -43,4 +43,12 @@ export function classifyLead(leadId) {
   return request(`/leads/${leadId}/classify`, { method: 'POST' });
 }
 
+export function createLead({ companyName, url }) {
+  return request('/leads', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ company_name: companyName, url }),
+  });
+}
+
 export { ApiError };

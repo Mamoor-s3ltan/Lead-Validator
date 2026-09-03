@@ -6,6 +6,15 @@ client = AsyncOpenAI(
     api_key=OPENROUTER_API_KEY,
     base_url="https://openrouter.ai/api/v1",
 )
+def resp_min_contextwindow_adjustment(text: str, max_chars: int = 2000):
+    if text is None:
+        return None
+
+    if len(text) <= max_chars:
+        return text
+
+    half = max_chars // 2
+    return text[:half] + "\n...\n" + text[-half:]
 
 
 def load_system_prompt() -> str:
@@ -14,10 +23,13 @@ def load_system_prompt() -> str:
 
 
 def _build_user_message(company_name: str, url: str | None, content: str) -> str:
+    content = resp_min_contextwindow_adjustment(content, 2000)
+
     return (
         f"Company: {company_name}\n"
         f"URL: {url or '(none provided)'}\n\n"
-        f"Page content:\n\"\"\"\n{content[:8000]}\n\"\"\""
+        f"Page content:\n"
+        f"{content}"
     )
 
 
@@ -46,7 +58,9 @@ async def _call_llm(system_prompt: str, user_message: str) -> str:
         ],
         response_format={"type": "json_object"},
         temperature=0,
+        max_tokens=200,
     )
+
     return response.choices[0].message.content
 
 
@@ -57,6 +71,9 @@ async def classify_content(company_name: str, url: str | None, content: str) -> 
     """
     system_prompt = load_system_prompt()
     user_message = _build_user_message(company_name, url, content)
+
+    print("Website content chars:", len(content))
+    print("Conversation chars:", len(str(user_message)))
 
     last_error = None
     for attempt in range(2):

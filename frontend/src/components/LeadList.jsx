@@ -1,13 +1,24 @@
 import StatusPill from './StatusPill';
+import AddLead from './AddLead';
 import { formatConfidence, shortUrl } from '../utils/utils';
 
-export default function LeadList({ leads, selectedId, onSelect }) {
+export default function LeadList({ leads, selectedId, onSelect, showAddForm, onToggleAddForm, onLeadCreated }) {
   return (
     <div className="w-[340px] shrink-0 border-r border-border flex flex-col overflow-hidden">
       <div className="px-[18px] py-4 border-b border-border flex items-baseline justify-between">
         <h1 className="text-[13px] font-semibold uppercase tracking-wide m-0">Leads</h1>
-        <span className="font-mono text-secondary text-xs">{leads.length}</span>
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-secondary text-xs">{leads.length}</span>
+          <button
+            onClick={onToggleAddForm}
+            className="text-accent text-xs font-medium hover:opacity-75"
+          >
+            {showAddForm ? 'Close' : '+ Add lead'}
+          </button>
+        </div>
       </div>
+
+      {showAddForm && <AddLead onCreated={onLeadCreated} onCancel={onToggleAddForm} />}
 
       <div className="overflow-y-auto flex-1">
         {leads.length === 0 && (
