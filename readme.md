@@ -89,7 +89,7 @@ export CLASSIFIER_MODEL= openai/gpt-4o-mini
 Run it:
 
 ```bash
-uvicorn main:app --reload --port 8000
+uvicorn main:app --reload 
 ```
 
 The API is now at `http://127.0.0.1:8000`. Visit
@@ -98,16 +98,16 @@ The API is now at `http://127.0.0.1:8000`. Visit
 ### 2. Frontend
 
 ```bash
-cd lead-validator-frontend
+cd frontend
 npm install
 ```
 
-Tell it where the backend lives (defaults to `http://127.0.0.1:8000` if
+Tell it where the backend lives (defaults to `http://localhost:5173/` if
 you skip this):
 
 ```bash
 # lead-validator-frontend/.env
-VITE_API_BASE=http://127.0.0.1:8000
+VITE_API_BASE=http://localhost:5173/
 ```
 
 Run it:
