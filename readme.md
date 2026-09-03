@@ -22,28 +22,7 @@ its reasoning. This app lets you browse leads, add new ones, and trigger
   (`CLASSIFIER_MODEL`).
 - **Frontend**: React + Vite + Tailwind CSS, in `lead-validator-frontend/`.
 
-```
-.
-├── main.py                     FastAPI app (routes below)
-├── libs/
-│   ├── config.py                FRONTEND_ORIGIN, CLASSIFIER_MODEL
-│   ├── db.py                    Supabase queries (get_lead(s), insert_*)
-│   ├── fetchContent.py          Jina/Playwright page fetching
-│   └── Classifier.py            classify_content, no_url_result
-└── lead-validator-frontend/
-    ├── src/
-    │   ├── App.jsx               state + wiring
-    │   ├── api.js                fetch wrappers to the backend
-    │   ├── utils.js              normalizeLead, formatting helpers
-    │   ├── index.css             Tailwind entry
-    │   └── components/
-    │       ├── LeadList.jsx       left pane
-    │       ├── LeadDetail.jsx     right pane, classify action
-    │       ├── AddLead.jsx        add-lead form
-    │       └── StatusPill.jsx     category/confidence badge
-    ├── tailwind.config.js         design tokens (colors, fonts)
-    └── package.json
-```
+
 
 ## API
 
