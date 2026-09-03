@@ -11,7 +11,7 @@ SUPABASE_URL = os.environ["SUPABASE_URL"]
 # reading/writing unless you add permissive policies for it. The
 # service_role key bypasses RLS entirely and must only ever live on
 # the backend — never send it to React.
-SUPABASE_KEY = os.environ["SUPABASE_KEY"]
+SUPABASE_KEY = os.environ["SUPABASE_PUBLISHABLE_KEY"]
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
